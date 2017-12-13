@@ -8,14 +8,13 @@
 #
 
 include_recipe 'java'
+
+node.override['elasticsearch']['configure']['allocated_memory'] =
+  node['chef_rails_elasticsearch']['allocated_memory']
+node.override['elasticsearch']['configure']['configuration'] = {
+  'network.host' => '127.0.0.1'
+}
+
 include_recipe 'elasticsearch'
-
-elasticsearch_configure 'elasticsearch' do
-  if node['chef_rails_elasticsearch']['allocated_memory']
-    allocated_memory node['chef_rails_elasticsearch']['allocated_memory']
-  end
-
-  configuration 'network.host' => '127.0.0.1'
-end
 
 # elasticsearch_plugin('x-pack') { action :install }
