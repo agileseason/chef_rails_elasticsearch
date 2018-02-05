@@ -17,14 +17,16 @@ node.override['elasticsearch']['configure']['configuration'] = {
 
 include_recipe 'elasticsearch'
 
-elasticsearch_plugin 'elasticsearch-analysis-morphology' do
-  url(
-    'http://dl.bintray.com/content/imotov/elasticsearch-plugins/org/elasticsearch/elasticsearch-analysis-morphology/' +
-      node['elasticsearch']['install']['version'] +
-      '/elasticsearch-analysis-morphology-' +
-      node['elasticsearch']['install']['version'] + '.zip'
-  )
-  action :install
+unless File.exists? '/usr/share/elasticsearch/plugins/analysis-morphology'
+  elasticsearch_plugin 'analysis-morphology' do
+    url(
+      'http://dl.bintray.com/content/imotov/elasticsearch-plugins/org/elasticsearch/elasticsearch-analysis-morphology/' +
+        node['elasticsearch']['install']['version'] +
+        '/elasticsearch-analysis-morphology-' +
+        node['elasticsearch']['install']['version'] + '.zip'
+    )
+    action :install
+  end
 end
 
 # elasticsearch_plugin('x-pack') { action :install }
