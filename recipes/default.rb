@@ -11,13 +11,17 @@ include_recipe 'java'
 
 node.override['elasticsearch']['configure']['allocated_memory'] =
   node['chef_rails_elasticsearch']['allocated_memory']
+
+node.override['elasticsearch']['install']['version'] =
+  node['chef_rails_elasticsearch']['version']
+
 node.override['elasticsearch']['configure']['configuration'] = {
-  'network.host' => '127.0.0.1'
+  'network.host' => node['chef_rails_elasticsearch']['listen']
 }
 
 include_recipe 'elasticsearch'
 
-unless File.exists? '/usr/share/elasticsearch/plugins/analysis-morphology'
+unless File.exist? '/usr/share/elasticsearch/plugins/analysis-morphology'
   elasticsearch_plugin 'analysis-morphology' do
     url(
       'http://dl.bintray.com/content/imotov/elasticsearch-plugins/org/elasticsearch/elasticsearch-analysis-morphology/' +
