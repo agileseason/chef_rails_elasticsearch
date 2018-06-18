@@ -21,15 +21,17 @@ node.override['elasticsearch']['configure']['configuration'] = {
 
 include_recipe 'elasticsearch'
 
-unless File.exist? '/usr/share/elasticsearch/plugins/analysis-morphology'
-  elasticsearch_plugin 'analysis-morphology' do
-    url(
-      'http://dl.bintray.com/content/imotov/elasticsearch-plugins/org/elasticsearch/elasticsearch-analysis-morphology/' +
-        node['elasticsearch']['install']['version'] +
-        '/elasticsearch-analysis-morphology-' +
-        node['elasticsearch']['install']['version'] + '.zip'
-    )
-    action :install
+if node['chef_rails_elasticsearch']['plugins']['analysis-morphology']
+  unless File.exist? '/usr/share/elasticsearch/plugins/analysis-morphology'
+    elasticsearch_plugin 'analysis-morphology' do
+      url(
+        'http://dl.bintray.com/content/imotov/elasticsearch-plugins/org/elasticsearch/elasticsearch-analysis-morphology/' +
+          node['elasticsearch']['install']['version'] +
+          '/elasticsearch-analysis-morphology-' +
+          node['elasticsearch']['install']['version'] + '.zip'
+      )
+      action :install
+    end
   end
 end
 
