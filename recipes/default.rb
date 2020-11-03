@@ -7,7 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
-include_recipe 'java'
+openjdk_pkg_install node['chef_rails_elasticsearch']['jdk_version']
 
 node.override['elasticsearch']['configure']['allocated_memory'] =
   node['chef_rails_elasticsearch']['allocated_memory']
@@ -15,8 +15,26 @@ node.override['elasticsearch']['configure']['allocated_memory'] =
 node.override['elasticsearch']['install']['version'] =
   node['chef_rails_elasticsearch']['version']
 
+node.override['elasticsearch']['configure']['jvm_options'] = %w[
+  -XX:+AlwaysPreTouch
+  -server
+  -Xss1m
+  -Djava.awt.headless=true
+  -Dfile.encoding=UTF-8
+  -Djna.nosys=true
+  -XX:-OmitStackTraceInFastThrow
+  -Dio.netty.noUnsafe=true
+  -Dio.netty.noKeySetOptimization=true
+  -Dio.netty.recycler.maxCapacityPerThread=0
+  -Dlog4j.shutdownHookEnabled=false
+  -Dlog4j2.disable.jmx=true
+  -XX:+HeapDumpOnOutOfMemoryError
+]
+
 node.override['elasticsearch']['configure']['configuration'] = {
-  'network.host' => node['chef_rails_elasticsearch']['listen']
+  'network.host' => node['chef_rails_elasticsearch']['listen'],
+  'discovery.seed_hosts' => [node['chef_rails_elasticsearch']['listen']],
+  'cluster.initial_master_nodes' => node['chef_rails_elasticsearch']['listen']
 }
 
 include_recipe 'elasticsearch'
