@@ -28,6 +28,7 @@ node.override['elasticsearch']['configure']['jvm_options'] = %w[
   -Dio.netty.recycler.maxCapacityPerThread=0
   -Dlog4j.shutdownHookEnabled=false
   -Dlog4j2.disable.jmx=true
+  -Dlog4j2.formatMsgNoLookups=true
   -XX:+HeapDumpOnOutOfMemoryError
 ]
 
